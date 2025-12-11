@@ -1,4 +1,4 @@
-# discord-webhook-client
+# Discord Webhook Client
 
 Lightweight Discord webhook client built on `requests` with dataclass helpers for embeds and fields. Targeted at Python 3.14 with uv-friendly metadata so it is ready to publish.
 
