@@ -14,8 +14,8 @@ import dataclasses
 class DiscordNotificationField:
     """Represents a single field in an embed."""
 
-    name: str = ""
-    value: str = ""
+    name: str | None = None
+    value: str | None = None
     inline: bool = False
 
     def __str__(self) -> str:  # pragma: no cover - utility formatting
@@ -26,8 +26,8 @@ class DiscordNotificationField:
 class DiscordNotificationEmbed:
     """Represents an embed object."""
 
-    description: str = ""
-    color: int = 0
+    description: str | None = None
+    color: int | None = None
     fields: list[DiscordNotificationField] = dataclasses.field(default_factory=list)
 
     def __str__(self) -> str:  # pragma: no cover - utility formatting
@@ -38,9 +38,9 @@ class DiscordNotificationEmbed:
 class DiscordNotification:
     """Top-level webhook payload."""
 
-    content: str = ""
-    username: str = ""
-    avatar_url: str = ""
+    content: str | None = None
+    username: str | None = None
+    avatar_url: str | None = None
     embeds: list[DiscordNotificationEmbed] = dataclasses.field(default_factory=list)
 
     def __str__(self) -> str:  # pragma: no cover - utility formatting

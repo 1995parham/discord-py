@@ -52,6 +52,9 @@ client.notify(payload)
 - `url="bypass"` is a no-op, useful in tests.
 - Empty embed field values are normalized to `-` so Discord accepts the payload.
 - Default username and avatar can be customized via the client constructor.
+- Payloads are validated against Discord limits before sending; HTTP errors bubble up so callers can react/retry.
+- Simple 429 retry support using Discord's `retry_after`.
+- `DiscordClient` can be used as a context manager to close its session cleanly.
 
 ## Publishing
 
@@ -60,4 +63,13 @@ Use uv to build and publish when ready:
 ```bash
 uv build
 uv publish --token <pypi-token>
+```
+
+## Development
+
+```bash
+python -m pip install -e .[test,lint]
+ruff check .
+mypy .
+pytest
 ```
