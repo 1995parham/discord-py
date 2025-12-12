@@ -17,4 +17,7 @@ jobs:
       - run: ruff check
       - run: ruff format --check
       - run: mypy .
-      - run: pytest
+      - name: Run tests
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: pytest -v
