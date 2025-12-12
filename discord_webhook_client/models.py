@@ -5,8 +5,6 @@ Reference:
 https://discord.com/developers/docs/resources/webhook#execute-webhook-jsonform-params
 """
 
-from __future__ import annotations
-
 import dataclasses
 
 

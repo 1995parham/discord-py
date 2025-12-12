@@ -6,7 +6,7 @@ authors = [{ name = "Squad", email = "dev@squad.local" }]
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "requests>=2.32",
+    "httpx>=0.28.1",
 ]
 
 [project.urls]

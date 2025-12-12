@@ -3,11 +3,10 @@ from __future__ import annotations
 import dataclasses
 import logging
 import time
-from collections.abc import Mapping
 from types import TracebackType
-from typing import Any, Protocol
+from typing import Any
 
-import requests
+import httpx
 
 from .models import DiscordNotification
 
@@ -22,19 +21,6 @@ _MAX_EMBED_DESCRIPTION = 4096
 _MAX_EMBED_FIELDS = 25
 _MAX_FIELD_NAME = 256
 _MAX_FIELD_VALUE = 1024
-
-
-class _SessionProtocol(Protocol):
-    def post(
-        self,
-        url: str,
-        *,
-        json: Any = None,
-        params: Mapping[str, Any] | None = None,
-        timeout: float | None = None,
-    ) -> requests.Response: ...
-
-    def close(self) -> Any: ...
 
 
 Payload = dict[str, Any]
@@ -57,7 +43,7 @@ class DiscordClient:
         default_avatar_url: str | None = "https://github.com/1995parham.png",
         wait: bool = True,
         timeout: float = 30,
-        session: _SessionProtocol | None = None,
+        session: httpx.Client | None = None,
         max_retries: int = 1,
     ):
         self.url = url or "print"
@@ -66,7 +52,7 @@ class DiscordClient:
         self.wait = wait
         self.timeout = timeout
         self.max_retries = max_retries
-        self._session: _SessionProtocol = session or requests.Session()
+        self._session: httpx.Client = session or httpx.Client()
         self._owns_session: bool = session is None
 
     def __enter__(self) -> DiscordClient:
@@ -84,7 +70,7 @@ class DiscordClient:
         if self._owns_session:
             self._session.close()
 
-    def notify(self, data: DiscordNotification) -> requests.Response | None:
+    def notify(self, data: DiscordNotification) -> httpx.Response | None:
         payload: Payload = dataclasses.asdict(data)
         self._apply_defaults(payload)
         self._normalize_payload(payload)
@@ -156,7 +142,7 @@ class DiscordClient:
                 if len(field["value"]) > _MAX_FIELD_VALUE:
                     raise ValueError("Embed field value exceeds Discord limit of 1024 characters")
 
-    def _post_with_retry(self, payload: Payload) -> requests.Response:
+    def _post_with_retry(self, payload: Payload) -> httpx.Response:
         attempts = 0
         while True:
             attempts += 1
@@ -178,7 +164,7 @@ class DiscordClient:
             return response
 
     @staticmethod
-    def _get_retry_after_seconds(response: requests.Response) -> float:
+    def _get_retry_after_seconds(response: httpx.Response) -> float:
         try:
             body = response.json()
             retry_after = float(body.get("retry_after", 0))
