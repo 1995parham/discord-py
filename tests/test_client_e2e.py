@@ -34,7 +34,7 @@ class TestRealWebhook:
         assert DISCORD_WEBHOOK_URL is not None
         content = f"🧪 Test run #{self.GITHUB_RUN_NUMBER} by **{self.GITHUB_ACTOR}** on `{self.GITHUB_REF_NAME}`"
         with DiscordClient(DISCORD_WEBHOOK_URL) as client:
-            response = client.notify(DiscordNotification(content=content))
+            response = client.notify(DiscordNotification(content=content, avatar_url="https://github.com/github.png"))
         assert response is not None
         assert response.status_code in (200, 204)
 
@@ -45,6 +45,7 @@ class TestRealWebhook:
             response = client.notify(
                 DiscordNotification(
                     content="📊 CI Status Report",
+                    avatar_url="https://github.com/github.png",
                     embeds=[
                         DiscordNotificationEmbed(
                             description=f"Tests running for [{self.GITHUB_REPOSITORY}]({repo_url})",
@@ -83,6 +84,6 @@ class TestRealWebhook:
         username = f"CI Bot ({self.GITHUB_REF_NAME})"
         content = f"✅ All systems operational! Commit `{self.GITHUB_SHA}` is looking good."
         with DiscordClient(DISCORD_WEBHOOK_URL, default_username=username) as client:
-            response = client.notify(DiscordNotification(content=content))
+            response = client.notify(DiscordNotification(content=content, avatar_url="https://github.com/github.png"))
         assert response is not None
         assert response.status_code in (200, 204)
