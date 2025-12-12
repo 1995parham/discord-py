@@ -1,4 +1,9 @@
-# Discord Webhook Client
+<div align="center">
+    <h1>Discord Webhook Client</h1>
+    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/1995parham/discord-py/ci.yml?style=for-the-badge&logo=github">
+</div>
+
+## Introduction
 
 Lightweight Discord webhook client built on `requests` with dataclass helpers for embeds and fields. Targeted at Python 3.14 with uv-friendly metadata so it is ready to publish.
 
