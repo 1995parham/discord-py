@@ -68,8 +68,7 @@ uv publish --token <pypi-token>
 ## Development
 
 ```bash
-python -m pip install -e .[test,lint]
-ruff check .
-mypy .
-pytest
+uv run ruff check
+uv run mypy .
+uv run pytest
 ```
