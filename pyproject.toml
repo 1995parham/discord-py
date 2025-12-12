@@ -36,4 +36,4 @@ warn_unused_ignores = true
 strict_equality = true
 
 [dependency-groups]
-dev = ["mypy>=1.19.0", "ruff>=0.14.9", "pytest>=8.3", "requests-mock>=1.12"]
+dev = ["mypy>=1.19.0", "ruff>=0.14.9", "pytest>=8.3", "pytest-httpx>=0.30"]
