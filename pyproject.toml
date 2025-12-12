@@ -4,16 +4,19 @@ version = "0.1.0"
 description = "Lightweight Discord webhook client with dataclass payload helpers."
 authors = [{ name = "Squad", email = "dev@squad.local" }]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 dependencies = ["requests>=2.32"]
-optional-dependencies = { test = ["pytest>=8.3", "requests-mock>=1.12"], lint = [
-    "mypy>=1.11",
-    "ruff>=0.6",
+optional-dependencies = { test = [
+  "pytest>=8.3",
+  "requests-mock>=1.12",
+], lint = [
+  "mypy>=1.11",
+  "ruff>=0.6",
 ] }
 
 [project.urls]
-Homepage = "https://example.com/discord-webhook-client"
-Repository = "https://example.com/discord-webhook-client"
+Homepage = "https://github.com/1995parham/discord-py"
+Repository = "https://github.com/1995parham/discord-py"
 
 [build-system]
 requires = ["hatchling>=1.22"]
@@ -23,14 +26,14 @@ build-backend = "hatchling.build"
 package = true
 
 [tool.ruff]
-target-version = "py310"
-line-length = 100
+target-version = "py314"
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.14"
 disallow_untyped_defs = true
 no_implicit_optional = true
 warn_redundant_casts = true

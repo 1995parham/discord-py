@@ -4,7 +4,7 @@ import dataclasses
 import logging
 import time
 from types import TracebackType
-from typing import Any
+from typing import Any, Mapping, Protocol
 
 import requests
 
@@ -23,6 +23,24 @@ _MAX_FIELD_NAME = 256
 _MAX_FIELD_VALUE = 1024
 
 
+class _SessionProtocol(Protocol):
+    def post(
+        self,
+        url: str,
+        *,
+        json: Any = None,
+        params: Mapping[str, Any] | None = None,
+        timeout: float | None = None,
+    ) -> requests.Response: ...
+
+    def close(self) -> Any: ...
+
+
+Payload = dict[str, Any]
+EmbedPayload = dict[str, Any]
+FieldPayload = dict[str, Any]
+
+
 class DiscordClient:
     """
     Minimal Discord webhook client that supports printing or bypassing
@@ -38,7 +56,7 @@ class DiscordClient:
         default_avatar_url: str | None = "https://github.com/1995parham.png",
         wait: bool = True,
         timeout: float = 30,
-        session: requests.Session | None = None,
+        session: _SessionProtocol | None = None,
         max_retries: int = 1,
     ):
         self.url = url or "print"
@@ -47,8 +65,8 @@ class DiscordClient:
         self.wait = wait
         self.timeout = timeout
         self.max_retries = max_retries
-        self._session = session or requests.Session()
-        self._owns_session = session is None
+        self._session: _SessionProtocol = session or requests.Session()
+        self._owns_session: bool = session is None
 
     def __enter__(self) -> "DiscordClient":
         return self
@@ -66,7 +84,7 @@ class DiscordClient:
             self._session.close()
 
     def notify(self, data: DiscordNotification) -> requests.Response | None:
-        payload: dict[str, Any] = dataclasses.asdict(data)
+        payload: Payload = dataclasses.asdict(data)
         self._apply_defaults(payload)
         self._normalize_payload(payload)
         self._validate_payload(payload)
@@ -81,21 +99,21 @@ class DiscordClient:
         response = self._post_with_retry(payload)
         return response
 
-    def _apply_defaults(self, payload: dict[str, Any]) -> None:
+    def _apply_defaults(self, payload: Payload) -> None:
         if self.default_username and not payload.get("username"):
             payload["username"] = self.default_username
         if self.default_avatar_url and not payload.get("avatar_url"):
             payload["avatar_url"] = self.default_avatar_url
 
-    def _normalize_payload(self, payload: dict[str, Any]) -> None:
+    def _normalize_payload(self, payload: Payload) -> None:
         for embed in payload.get("embeds", []) or []:
             for field in embed.get("fields", []) or []:
                 if not field.get("value"):
                     field["value"] = "-"
 
-    def _validate_payload(self, payload: dict[str, Any]) -> None:
+    def _validate_payload(self, payload: Payload) -> None:
         content = payload.get("content") or ""
-        embeds = payload.get("embeds") or []
+        embeds: list[EmbedPayload] = payload.get("embeds") or []
 
         if not content and not embeds:
             raise ValueError("Discord notification requires content or embeds")
@@ -123,7 +141,7 @@ class DiscordClient:
             if color is not None and not (0 <= color <= 0xFFFFFF):
                 raise ValueError("Embed color must be between 0x000000 and 0xFFFFFF")
 
-            fields = embed.get("fields") or []
+            fields: list[FieldPayload] = embed.get("fields") or []
             if len(fields) > _MAX_EMBED_FIELDS:
                 raise ValueError("Discord allows a maximum of 25 embed fields")
 
@@ -137,7 +155,7 @@ class DiscordClient:
                 if len(field["value"]) > _MAX_FIELD_VALUE:
                     raise ValueError("Embed field value exceeds Discord limit of 1024 characters")
 
-    def _post_with_retry(self, payload: dict[str, Any]) -> requests.Response:
+    def _post_with_retry(self, payload: Payload) -> requests.Response:
         attempts = 0
         while True:
             attempts += 1
