@@ -114,9 +114,7 @@ class TestRealWebhook:
     def test_send_simple_message(self) -> None:
         assert DISCORD_WEBHOOK_URL is not None
         with DiscordClient(DISCORD_WEBHOOK_URL) as client:
-            response = client.notify(
-                DiscordNotification(content="Test message from discord-webhook-client")
-            )
+            response = client.notify(DiscordNotification(content="Test message from discord-webhook-client"))
         assert response is not None
         assert response.status_code in (200, 204)
 
@@ -152,8 +150,6 @@ class TestRealWebhook:
     def test_send_with_custom_username(self) -> None:
         assert DISCORD_WEBHOOK_URL is not None
         with DiscordClient(DISCORD_WEBHOOK_URL, default_username="Test Bot") as client:
-            response = client.notify(
-                DiscordNotification(content="Message with custom username")
-            )
+            response = client.notify(DiscordNotification(content="Message with custom username"))
         assert response is not None
         assert response.status_code in (200, 204)
