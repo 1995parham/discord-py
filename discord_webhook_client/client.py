@@ -3,8 +3,9 @@ from __future__ import annotations
 import dataclasses
 import logging
 import time
+from collections.abc import Mapping
 from types import TracebackType
-from typing import Any, Mapping, Protocol
+from typing import Any, Protocol
 
 import requests
 
@@ -68,7 +69,7 @@ class DiscordClient:
         self._session: _SessionProtocol = session or requests.Session()
         self._owns_session: bool = session is None
 
-    def __enter__(self) -> "DiscordClient":
+    def __enter__(self) -> DiscordClient:
         return self
 
     def __exit__(

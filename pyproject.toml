@@ -5,14 +5,9 @@ description = "Lightweight Discord webhook client with dataclass payload helpers
 authors = [{ name = "Squad", email = "dev@squad.local" }]
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["requests>=2.32"]
-optional-dependencies = { test = [
-  "pytest>=8.3",
-  "requests-mock>=1.12",
-], lint = [
-  "mypy>=1.11",
-  "ruff>=0.6",
-] }
+dependencies = [
+    "requests>=2.32",
+]
 
 [project.urls]
 Homepage = "https://github.com/1995parham/discord-py"
@@ -39,3 +34,6 @@ no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 strict_equality = true
+
+[dependency-groups]
+dev = ["mypy>=1.19.0", "ruff>=0.14.9", "pytest>=8.3", "requests-mock>=1.12"]
