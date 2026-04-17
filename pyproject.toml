@@ -14,7 +14,7 @@ Homepage = "https://github.com/1995parham/discord-py"
 Repository = "https://github.com/1995parham/discord-py"
 
 [build-system]
-requires = ["hatchling>=1.22"]
+requires = ["hatchling>=1.29.0"]
 build-backend = "hatchling.build"
 
 [tool.uv]
